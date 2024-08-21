@@ -1,6 +1,5 @@
 package com.krieger.document.manager.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +22,7 @@ import java.util.List;
 public class Document {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String title;
@@ -32,15 +30,14 @@ public class Document {
     @Lob // To handle large texts
     private String body;
 
-    // Relationships
     @ManyToMany
     @JoinTable(
-            name = "document_authors",
+            name = "document_author",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
     private List<Author> authors;
 
-    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(mappedBy = "documents")
     private List<Reference> references;
 }

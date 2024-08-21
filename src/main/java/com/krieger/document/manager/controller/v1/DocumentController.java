@@ -1,5 +1,6 @@
 package com.krieger.document.manager.controller.v1;
 
+import com.krieger.document.manager.dto.DocumentWithDetailsDto;
 import com.krieger.document.manager.entity.Document;
 import com.krieger.document.manager.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +24,20 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping
-    public ResponseEntity<Document> createDocument(@RequestBody Document document) {
-        Document createdDocument = documentService.createDocument(document);
+    public ResponseEntity<DocumentWithDetailsDto> createDocument(@RequestBody DocumentWithDetailsDto document) {
+        DocumentWithDetailsDto createdDocument = documentService.createDocument(document);
         return ResponseEntity.ok(createdDocument);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Document> getDocumentById(@PathVariable long id) {
-        Document document = documentService.getDocumentById(id);
+    public ResponseEntity<DocumentWithDetailsDto> getDocumentById(@PathVariable long id) {
+        DocumentWithDetailsDto document = documentService.getDocumentById(id);
         return ResponseEntity.ok(document);
     }
 
     @GetMapping
-    public ResponseEntity<List<Document>> getAllDocuments() {
-        List<Document> documents = documentService.getAllDocuments();
+    public ResponseEntity<List<DocumentWithDetailsDto>> getAllDocuments() {
+        List<DocumentWithDetailsDto> documents = documentService.getAllDocuments();
         return ResponseEntity.ok(documents);
     }
 

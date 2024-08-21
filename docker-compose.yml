@@ -13,21 +13,6 @@ services:
       PGPORT: 5434
     volumes:
       - postgres-document-manager-db:/var/lib/postgresql/document-manager/data
-  document-manager:
-    build:
-      context: .
-    container_name: document-manager
-    ports:
-      - "8080:8080"
-    environment:
-      POSTGRES_USER: betmart
-      POSTGRES_PASSWORD: betmart
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-document-manager-db:5434/document-manager
-      SPRING_DATASOURCE_USERNAME: betmart
-      SPRING_DATASOURCE_PASSWORD: betmart
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-    depends_on:
-      - postgres-document-manager-db
 volumes:
   postgres-document-manager-db:
     driver: local

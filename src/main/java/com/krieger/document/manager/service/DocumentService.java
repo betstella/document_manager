@@ -1,12 +1,15 @@
 package com.krieger.document.manager.service;
 
+import com.krieger.document.manager.dto.DocumentWithDetailsDto;
 import com.krieger.document.manager.entity.Document;
+import com.krieger.document.manager.mapper.DocumentMapper;
 import com.krieger.document.manager.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DocumentService {
@@ -14,17 +17,27 @@ public class DocumentService {
     @Autowired
     private DocumentRepository documentRepository;
 
-    public Document createDocument(Document document) {
-        return documentRepository.save(document);
+    @Autowired
+    private AuthorService authorService;
+
+    @Autowired
+    private ReferenceService referenceService;
+
+    public DocumentWithDetailsDto createDocument(DocumentWithDetailsDto document) {
+        authorService.processAuthors(document.getAuthors());
+        referenceService.processReferences(document.getReferences());
+        Document documentSaved = documentRepository.save(DocumentMapper.mapDocumentWithDetailsDtoToDocument(document));
+        return DocumentMapper.mapDocumentToDetailedDto(documentSaved);
     }
 
-    public Document getDocumentById(long id) {
+    public DocumentWithDetailsDto getDocumentById(long id) {
         Optional<Document> document = documentRepository.findById(id);
-        return document.orElse(null);
+        return document.map(DocumentMapper::mapDocumentToDetailedDto).orElse(null);
     }
 
-    public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
+    public List<DocumentWithDetailsDto> getAllDocuments() {
+        return documentRepository.findAll().stream()
+                .map(DocumentMapper::mapDocumentToDetailedDto).collect(Collectors.toList());
     }
 
     public Document updateDocument(long id, Document documentDetails) {
