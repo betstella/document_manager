@@ -1,12 +1,12 @@
 package com.krieger.document.manager.controller.v1;
 
 import com.krieger.document.manager.dto.DocumentWithDetailsDto;
-import com.krieger.document.manager.entity.Document;
 import com.krieger.document.manager.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,8 +42,14 @@ public class DocumentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Document> updateDocument(@PathVariable long id, @RequestBody Document documentDetails) {
-        Document updatedDocument = documentService.updateDocument(id, documentDetails);
+    public ResponseEntity<DocumentWithDetailsDto> updateDocument(@PathVariable long id, @RequestBody DocumentWithDetailsDto documentDetails) {
+        DocumentWithDetailsDto updatedDocument = documentService.updateDocument(id, documentDetails);
+        return ResponseEntity.ok(updatedDocument);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<DocumentWithDetailsDto> partialUpdateDocument(@PathVariable long id, @RequestBody DocumentWithDetailsDto documentDetails) {
+        DocumentWithDetailsDto updatedDocument = documentService.partialUpdateDocument(id, documentDetails);
         return ResponseEntity.ok(updatedDocument);
     }
 

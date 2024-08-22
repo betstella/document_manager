@@ -26,15 +26,8 @@ public class Reference {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Lob // To handle large texts
     private String referenceText;
 
-    // for escalability, at some point we may want to query all documents that use a specific reference
-    @ManyToMany
-    @JoinTable(
-            name = "document_reference",
-            joinColumns = @JoinColumn(name = "document_id"),
-            inverseJoinColumns = @JoinColumn(name = "reference_id")
-    )
+    @ManyToMany(mappedBy = "references")
     private List<Document> documents;
 }

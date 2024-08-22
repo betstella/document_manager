@@ -1,5 +1,7 @@
 package com.krieger.document.manager.controller.v1;
 
+import com.krieger.document.manager.dto.AuthorDto;
+import com.krieger.document.manager.dto.AuthorWithDocumentsDto;
 import com.krieger.document.manager.entity.Author;
 import com.krieger.document.manager.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,26 +23,25 @@ public class AuthorController {
     private AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
-        Author createdAuthor = authorService.createAuthor(author);
+    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
+        AuthorDto createdAuthor = authorService.createAuthor(author);
         return ResponseEntity.ok(createdAuthor);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getAuthorById(@PathVariable long id) {
-        Author author = authorService.getAuthorById(id);
-        return ResponseEntity.ok(author);
+    public ResponseEntity<AuthorWithDocumentsDto> getAuthorById(@PathVariable long id) {
+        return ResponseEntity.ok(authorService.getAuthorById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<Author>> getAllAuthors() {
-        List<Author> authors = authorService.getAllAuthors();
+    public ResponseEntity<List<AuthorWithDocumentsDto>> getAllAuthors() {
+        List<AuthorWithDocumentsDto> authors = authorService.getAllAuthors();
         return ResponseEntity.ok(authors);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable long id, @RequestBody Author authorDetails) {
-        Author updatedAuthor = authorService.updateAuthor(id, authorDetails);
+    public ResponseEntity<AuthorDto> updateAuthor(@PathVariable long id, @RequestBody AuthorDto authorDetails) {
+        AuthorDto updatedAuthor = authorService.updateAuthor(id, authorDetails);
         return ResponseEntity.ok(updatedAuthor);
     }
 

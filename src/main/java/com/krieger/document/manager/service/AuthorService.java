@@ -1,6 +1,7 @@
 package com.krieger.document.manager.service;
 
 import com.krieger.document.manager.dto.AuthorDto;
+import com.krieger.document.manager.dto.AuthorWithDocumentsDto;
 import com.krieger.document.manager.entity.Author;
 import com.krieger.document.manager.mapper.AuthorMapper;
 import com.krieger.document.manager.repository.AuthorRepository;
@@ -17,24 +18,26 @@ public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
 
-    public Author createAuthor(Author author) {
-        return authorRepository.save(author);
+    public AuthorDto createAuthor(AuthorDto author) {
+        Author authorToSave = AuthorMapper.mapDtoToAuthor(author);
+        Author savedAuthor = authorRepository.save(authorToSave);
+        return AuthorMapper.mapAuthorToDto(savedAuthor);
     }
 
-    public Author getAuthorById(long id) {
+    public AuthorWithDocumentsDto getAuthorById(long id) {
         Optional<Author> author = authorRepository.findById(id);
-        return author.orElse(null);
+        return author.map(AuthorMapper::mapAuthorToWithDocumentsDto).orElse(null);
     }
 
-    public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+    public List<AuthorWithDocumentsDto> getAllAuthors() {
+        return AuthorMapper.mapAuthorsToWithDocumentsDto(authorRepository.findAll());
     }
 
     public void processAuthors(Set<AuthorDto> authors) {
         for (AuthorDto author : authors) {
             Author existingAuthor = getAuthorByFirstAndLastName(author.getFirstname(), author.getLastname());
             if (existingAuthor == null) {
-                long id = createAuthor(AuthorMapper.mapDtoToAuthor(author)).getId();
+                long id = createAuthor(author).getId();
                 author.setId(id);
             } else {
                 author.setId(existingAuthor.getId());
@@ -46,14 +49,14 @@ public class AuthorService {
         return authorRepository.findByFirstnameAndLastname(firstname, lastname);
     }
 
-    public Author updateAuthor(long id, Author authorDetails) {
+    public AuthorDto updateAuthor(long id, AuthorDto authorDetails) {
         Optional<Author> optionalAuthor = authorRepository.findById(id);
         if (optionalAuthor.isPresent()) {
             Author author = optionalAuthor.get();
             author.setFirstname(authorDetails.getFirstname());
             author.setLastname(authorDetails.getLastname());
-            author.setDocuments(authorDetails.getDocuments());
-            return authorRepository.save(author);
+            author.setDocuments(AuthorMapper.mapDtoToAuthor(authorDetails).getDocuments());
+            return AuthorMapper.mapAuthorToDto(authorRepository.save(author));
         } else {
             return null;
         }

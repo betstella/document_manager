@@ -38,6 +38,12 @@ public class Document {
     )
     private List<Author> authors;
 
-    @ManyToMany(mappedBy = "documents")
+    // for scalability, at some point we may want to query all documents that use a specific reference
+    @ManyToMany
+    @JoinTable(
+            name = "document_reference",
+            joinColumns = @JoinColumn(name = "document_id"),
+            inverseJoinColumns = @JoinColumn(name = "reference_id")
+    )
     private List<Reference> references;
 }
