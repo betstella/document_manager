@@ -5,6 +5,7 @@ import com.krieger.document.manager.dto.DocumentWithDetailsDto;
 import com.krieger.document.manager.entity.Document;
 import com.krieger.document.manager.util.InputSanitizer;
 
+//Mapper class to facilitate the conversion between Document entity and DocumentDto objects
 public class DocumentMapper {
     public static DocumentDto mapDocumentToDto(Document document) {
         return DocumentDto.builder()

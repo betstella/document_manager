@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// Mapper class to facilitate the conversion between Author and AuthorDto objects
 public class AuthorMapper {
     public static AuthorWithDocumentsDto mapAuthorToWithDocumentsDto(Author author) {
         return AuthorWithDocumentsDto.builder()

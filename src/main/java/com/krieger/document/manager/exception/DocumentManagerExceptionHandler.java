@@ -13,20 +13,23 @@ import java.util.Map;
 @RestControllerAdvice
 public class DocumentManagerExceptionHandler {
 
+    //Custom exception to handle when a record is not found
     @ExceptionHandler(value = { DocumentManagerNotFoundException.class })
     public ResponseEntity<?> handleNotFoundException(DocumentManagerNotFoundException exception) {
         DocumentManagerException documentManagerException = new DocumentManagerException(exception.getMessage(), exception, HttpStatus.NOT_FOUND);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(documentManagerException);
     }
 
+    // Generic exception handler to display custom messages based on the use case
     @ExceptionHandler(value = { DocumentManagerServerErrorException.class })
     public ResponseEntity<?> handleGenericException(DocumentManagerServerErrorException exception) {
         DocumentManagerException documentManagerException = new DocumentManagerException(exception.getMessage(), exception, HttpStatus.NOT_FOUND);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(documentManagerException);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    // This method capture when an input value is invalid based on the validations in the DTOs
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {

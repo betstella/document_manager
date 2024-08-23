@@ -72,6 +72,7 @@ public class DocumentService {
         }
     }
 
+    // Partial update for PATCH Http method to update only the fields that are sent in the request
     public DocumentWithDetailsDto partialUpdateDocument(long id, DocumentWithDetailsDto documentDetails) {
         Optional<Document> optionalDocument = documentRepository.findById(id);
         if (optionalDocument.isPresent()) {
