@@ -9,6 +9,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,8 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Pattern(regexp = "[a-zA-Z0-9]")
+    @NotBlank(message = "Title must not be blank")
     private String title;
 
     @Lob // To handle large texts

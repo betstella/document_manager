@@ -1,5 +1,6 @@
 package com.krieger.document.manager.controller.v1;
 
+import com.krieger.document.manager.dto.DocumentDto;
 import com.krieger.document.manager.dto.DocumentWithDetailsDto;
 import com.krieger.document.manager.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class DocumentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DocumentWithDetailsDto> updateDocument(@PathVariable long id, @RequestBody DocumentWithDetailsDto documentDetails) {
+    public ResponseEntity<DocumentWithDetailsDto> updateDocument(@PathVariable long id, @RequestBody DocumentDto documentDetails) {
         DocumentWithDetailsDto updatedDocument = documentService.updateDocument(id, documentDetails);
         return ResponseEntity.ok(updatedDocument);
     }

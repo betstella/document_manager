@@ -2,12 +2,12 @@ package com.krieger.document.manager.controller.v1;
 
 import com.krieger.document.manager.dto.AuthorDto;
 import com.krieger.document.manager.dto.AuthorWithDocumentsDto;
-import com.krieger.document.manager.entity.Author;
 import com.krieger.document.manager.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,6 +42,12 @@ public class AuthorController {
     @PutMapping("/{id}")
     public ResponseEntity<AuthorDto> updateAuthor(@PathVariable long id, @RequestBody AuthorDto authorDetails) {
         AuthorDto updatedAuthor = authorService.updateAuthor(id, authorDetails);
+        return ResponseEntity.ok(updatedAuthor);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AuthorDto> partialUpdateAuthor(@PathVariable long id, @RequestBody AuthorDto authorDetails) {
+        AuthorDto updatedAuthor = authorService.patchUpdateAuthor(id, authorDetails);
         return ResponseEntity.ok(updatedAuthor);
     }
 

@@ -2,6 +2,7 @@ package com.krieger.document.manager.mapper;
 
 import com.krieger.document.manager.dto.ReferenceDto;
 import com.krieger.document.manager.entity.Reference;
+import com.krieger.document.manager.util.InputSanitizer;
 
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,7 @@ public class ReferenceMapper {
     public static ReferenceDto mapReferenceToDto(Reference reference) {
         return ReferenceDto.builder()
                 .id(reference.getId())
-                .referenceText(reference.getReferenceText())
+                .referenceText(InputSanitizer.sanitize(reference.getReferenceText()))
                 .build();
     }
     public static Set<ReferenceDto> mapReferencesToDto(List<Reference> references) {
@@ -22,7 +23,7 @@ public class ReferenceMapper {
 
     public static Reference mapDtoToReference(ReferenceDto referenceDto) {
         Reference reference = new Reference();
-        reference.setReferenceText(referenceDto.getReferenceText());
+        reference.setReferenceText(InputSanitizer.sanitize(referenceDto.getReferenceText()));
         reference.setId(referenceDto.getId());
         return reference;
     }
