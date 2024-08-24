@@ -61,17 +61,24 @@ public class AuthorService {
                 } else {
                     author.setId(existingAuthor.getId());
                 }
-            } else if (author.getId() != null && StringUtils.isNotBlank(author.getFirstname()) && StringUtils.isNotBlank(author.getLastname())) {
+            } else if (author.getId() != null ) {
                 Optional<Author> existingAuthor = authorRepository.findById(author.getId());
-                if (existingAuthor.isEmpty()) {
+                if (existingAuthor.isEmpty() && StringUtils.isNotBlank(author.getFirstname()) && StringUtils.isNotBlank(author.getLastname())) {
                     long id = createAuthor(author).getId();
                     author.setId(id);
-                }
-            } else {
-                if (StringUtils.isBlank(author.getFirstname())) {
-                    throw new DocumentManagerInvalidInput("Author firstname is required");
+                } else if (existingAuthor.isEmpty()) {
+                    if (StringUtils.isBlank(author.getFirstname())) {
+                        throw new DocumentManagerInvalidInput("Author firstname is required");
+                    } else {
+                        throw new DocumentManagerInvalidInput("Author lastname is required");
+                    }
                 } else {
-                    throw new DocumentManagerInvalidInput("Author lastname is required");
+                    if (StringUtils.isBlank(author.getFirstname())) {
+                        author.setFirstname(existingAuthor.get().getFirstname());
+                    }
+                    if(StringUtils.isBlank(author.getLastname())) {
+                        author.setLastname(existingAuthor.get().getLastname());
+                    }
                 }
             }
         }
