@@ -3,6 +3,7 @@ package com.krieger.document.manager.service;
 import com.krieger.document.manager.dto.DocumentDto;
 import com.krieger.document.manager.dto.DocumentWithDetailsDto;
 import com.krieger.document.manager.entity.Document;
+import com.krieger.document.manager.exception.DocumentManagerInvalidInput;
 import com.krieger.document.manager.exception.DocumentManagerNotFoundException;
 import com.krieger.document.manager.exception.DocumentManagerServerErrorException;
 import com.krieger.document.manager.mapper.AuthorMapper;
@@ -10,6 +11,7 @@ import com.krieger.document.manager.mapper.DocumentMapper;
 import com.krieger.document.manager.mapper.ReferenceMapper;
 import com.krieger.document.manager.repository.DocumentRepository;
 import com.krieger.document.manager.util.InputSanitizer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class DocumentService {
 
     @Autowired
@@ -37,7 +40,11 @@ public class DocumentService {
             referenceService.processReferences(document.getReferences());
             Document documentSaved = documentRepository.save(DocumentMapper.mapDocumentWithDetailsDtoToDocument(document));
             return DocumentMapper.mapDocumentToDetailedDto(documentSaved);
-        } catch (Exception e) {
+        } catch (DocumentManagerInvalidInput e) {
+            throw e;
+        }
+        catch (Exception e) {
+            log.error(e.getMessage());
             throw new DocumentManagerServerErrorException("Error creating a new document", e);
         }
     }
@@ -64,6 +71,7 @@ public class DocumentService {
                 document.setBody(InputSanitizer.sanitize(documentDto.getBody()));
                 return DocumentMapper.mapDocumentToDetailedDto(documentRepository.save(document));
             } catch (Exception e) {
+                log.error(e.getMessage());
                 throw new DocumentManagerServerErrorException("Error updating document with id="+id, e);
             }
 
@@ -92,6 +100,7 @@ public class DocumentService {
                 }
                 return DocumentMapper.mapDocumentToDetailedDto(documentRepository.save(document));
             } catch (Exception e) {
+                log.error(e.getMessage());
                 throw new DocumentManagerServerErrorException("Error updating document with id="+id, e);
             }
         } else {
@@ -103,6 +112,7 @@ public class DocumentService {
         try {
             documentRepository.deleteById(id);
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw new DocumentManagerServerErrorException(String.format(notFoundMessage, id));
         }
     }

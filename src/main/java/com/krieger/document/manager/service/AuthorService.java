@@ -3,11 +3,14 @@ package com.krieger.document.manager.service;
 import com.krieger.document.manager.dto.AuthorDto;
 import com.krieger.document.manager.dto.AuthorWithDocumentsDto;
 import com.krieger.document.manager.entity.Author;
+import com.krieger.document.manager.exception.DocumentManagerInvalidInput;
 import com.krieger.document.manager.exception.DocumentManagerNotFoundException;
 import com.krieger.document.manager.exception.DocumentManagerServerErrorException;
 import com.krieger.document.manager.mapper.AuthorMapper;
 import com.krieger.document.manager.repository.AuthorRepository;
 import com.krieger.document.manager.util.InputSanitizer;
+import io.micrometer.common.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class AuthorService {
 
     @Autowired
@@ -29,6 +33,7 @@ public class AuthorService {
             Author savedAuthor = authorRepository.save(authorToSave);
             return AuthorMapper.mapAuthorToDto(savedAuthor);
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw new DocumentManagerServerErrorException("Error creating a new author", e);
         }
     }
@@ -48,7 +53,7 @@ public class AuthorService {
     // Method to find existing authors and create new ones if they don't exist based on the id or the first and last name
     public void processAuthors(Set<AuthorDto> authors) {
         for (AuthorDto author : authors) {
-            if (author.getId() == null) {
+            if (author.getId() == null && StringUtils.isNotBlank(author.getFirstname()) && StringUtils.isNotBlank(author.getLastname())) {
                 Author existingAuthor = getAuthorByFirstAndLastName(author.getFirstname(), author.getLastname());
                 if (existingAuthor == null) {
                     long id = createAuthor(author).getId();
@@ -56,11 +61,17 @@ public class AuthorService {
                 } else {
                     author.setId(existingAuthor.getId());
                 }
-            } else {
+            } else if (author.getId() != null && StringUtils.isNotBlank(author.getFirstname()) && StringUtils.isNotBlank(author.getLastname())) {
                 Optional<Author> existingAuthor = authorRepository.findById(author.getId());
                 if (existingAuthor.isEmpty()) {
                     long id = createAuthor(author).getId();
                     author.setId(id);
+                }
+            } else {
+                if (StringUtils.isBlank(author.getFirstname())) {
+                    throw new DocumentManagerInvalidInput("Author firstname is required");
+                } else {
+                    throw new DocumentManagerInvalidInput("Author lastname is required");
                 }
             }
         }
@@ -79,6 +90,7 @@ public class AuthorService {
                 author.setLastname(InputSanitizer.sanitize(authorDetails.getLastname()));
                 return AuthorMapper.mapAuthorToDto(authorRepository.save(author));
             } catch (Exception e) {
+                log.error(e.getMessage());
                 throw new DocumentManagerServerErrorException("Error updating author id="+id, e);
             }
         } else {
@@ -110,6 +122,7 @@ public class AuthorService {
         try {
             authorRepository.deleteById(id);
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw new DocumentManagerServerErrorException("Error deleting author", e);
         }
     }

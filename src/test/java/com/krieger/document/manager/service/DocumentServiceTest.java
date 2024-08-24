@@ -54,6 +54,15 @@ public class DocumentServiceTest {
                         ReferenceDto.builder().referenceText("reference2").build()
                 )))
                 .build();
+
+        Document document = getDocument();
+        Mockito.when(documentRepository.save(Mockito.any())).thenReturn(document);
+
+        documentService.createDocument(documentDto);
+        Mockito.verify(documentRepository, Mockito.times(1)).save(Mockito.any());
+    }
+
+    private Document getDocument() {
         Author author1 = new Author();
         author1.setLastname("lastname");
         author1.setFirstname("firstname");
@@ -73,16 +82,12 @@ public class DocumentServiceTest {
         document.setReferences(new ArrayList<>(Arrays.asList(
                 reference, reference1
         )));
-        Mockito.when(documentRepository.save(Mockito.any())).thenReturn(document);
-
-        documentService.createDocument(documentDto);
-        Mockito.verify(documentRepository, Mockito.times(1)).save(Mockito.any());
+        return document;
     }
 
     @Test
     void getDocumentByIdTest() {
-        Document document = new Document();
-        document.setId(1L);
+        Document document = getDocument();
         Mockito.when(documentRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(document));
 
         documentService.getDocumentById(1L);

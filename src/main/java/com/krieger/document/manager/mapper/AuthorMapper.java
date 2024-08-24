@@ -4,6 +4,7 @@ import com.krieger.document.manager.dto.AuthorDto;
 import com.krieger.document.manager.dto.AuthorWithDocumentsDto;
 import com.krieger.document.manager.entity.Author;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +12,9 @@ import java.util.stream.Collectors;
 // Mapper class to facilitate the conversion between Author and AuthorDto objects
 public class AuthorMapper {
     public static AuthorWithDocumentsDto mapAuthorToWithDocumentsDto(Author author) {
+        if (author.getDocuments() == null) {
+            author.setDocuments(new ArrayList<>());
+        }
         return AuthorWithDocumentsDto.builder()
                 .id(author.getId())
                 .firstname(author.getFirstname())

@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 public class AuthorDto {
     private Long id;
     @NotBlank(message = "Firstname must not be blank")
-    @Pattern(regexp = "[a-zA-Z]")
+    @Pattern(regexp = "^[\\p{Alpha} ]*$")
     private String firstname;
     @NotBlank(message = "Lastname must not be blank")
-    @Pattern(regexp = "[a-zA-Z]")
+    @Pattern(regexp = "^[\\p{Alpha} ]*$")
     private String lastname;
 }

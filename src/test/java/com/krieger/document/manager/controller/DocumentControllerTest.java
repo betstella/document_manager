@@ -1,8 +1,10 @@
 package com.krieger.document.manager.controller;
 
 import com.krieger.document.manager.controller.v1.DocumentController;
+import com.krieger.document.manager.dto.AuthorDto;
 import com.krieger.document.manager.dto.DocumentDto;
 import com.krieger.document.manager.dto.DocumentWithDetailsDto;
+import com.krieger.document.manager.dto.ReferenceDto;
 import com.krieger.document.manager.service.DocumentService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,6 +14,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -35,6 +40,8 @@ public class DocumentControllerTest {
         DocumentWithDetailsDto document = DocumentWithDetailsDto.builder()
                 .title("title")
                 .body("body")
+                .authors(new HashSet<>(Collections.singletonList(AuthorDto.builder().firstname("firstname").lastname("lastname").build())))
+                .references(new HashSet<>(Collections.singletonList(ReferenceDto.builder().referenceText("reference").build())))
                 .build();
         Mockito.when(documentService.createDocument(Mockito.any(DocumentWithDetailsDto.class))).thenReturn(document);
 
@@ -42,8 +49,19 @@ public class DocumentControllerTest {
                 .contentType("application/json")
                 .content("""
                         {
-                            "title": "title",
-                            "body": "body"
+                            "title": "Title",
+                            "body": "body",
+                            "authors": [
+                                {
+                                    "firstname": "firstname",
+                                    "lastname": "lastname"
+                                }
+                            ],
+                            "references": [
+                                {
+                                    "referenceText": "reference"
+                                }
+                            ]
                         }""")).andDo(print()).andExpect(status().isOk());
     }
 

@@ -30,12 +30,12 @@ public class Author {
     private Long id;
 
     @Column(name = "firstname")
-    @Pattern(regexp = "[a-zA-Z]")
+    @Pattern(regexp = "^[A-Za-z0-9 ]*$", message ="firstname must be valid")
     @NotBlank(message = "Firstname must not be blank")
     private String firstname;
 
     @Column(name = "lastname")
-    @Pattern(regexp = "[a-zA-Z]")
+    @Pattern(regexp = "^[A-Za-z0-9 ]*$", message = "Lastname must be valid")
     @NotBlank(message = "Lastname must not be blank")
     private String lastname;
 

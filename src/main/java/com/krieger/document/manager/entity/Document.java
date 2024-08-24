@@ -29,11 +29,11 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Pattern(regexp = "[a-zA-Z0-9]")
+    @Pattern(regexp = "^[A-Za-z0-9 ]*$", message = "Title must be valid")
     @NotBlank(message = "Title must not be blank")
     private String title;
 
-    @Lob // To handle large texts
+    @NotBlank(message = "Body must not be blank")
     private String body;
 
     @ManyToMany

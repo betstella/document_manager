@@ -15,9 +15,10 @@ public class DocumentWithDetailsDto {
     private Long id;
 
     @NotBlank(message = "Title must not be blank")
-    @Pattern(regexp = "[a-zA-Z]")
+    @Pattern(regexp = "^[A-Za-z0-9 ]*$", message = "Title must be valid")
     private String title;
     @NotBlank(message = "Body must not be blank")
+    @Pattern(regexp = "^[\\p{Alpha} ]*$", message = "Body must be valid")
     private String body;
     @NotEmpty(message = "Authors must not be empty")
     private Set<AuthorDto> authors;

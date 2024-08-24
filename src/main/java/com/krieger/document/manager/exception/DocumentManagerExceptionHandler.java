@@ -16,15 +16,21 @@ public class DocumentManagerExceptionHandler {
     //Custom exception to handle when a record is not found
     @ExceptionHandler(value = { DocumentManagerNotFoundException.class })
     public ResponseEntity<?> handleNotFoundException(DocumentManagerNotFoundException exception) {
-        DocumentManagerException documentManagerException = new DocumentManagerException(exception.getMessage(), exception, HttpStatus.NOT_FOUND);
+        DocumentManagerException documentManagerException = new DocumentManagerException(exception.getMessage(), HttpStatus.NOT_FOUND);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(documentManagerException);
     }
 
     // Generic exception handler to display custom messages based on the use case
     @ExceptionHandler(value = { DocumentManagerServerErrorException.class })
     public ResponseEntity<?> handleGenericException(DocumentManagerServerErrorException exception) {
-        DocumentManagerException documentManagerException = new DocumentManagerException(exception.getMessage(), exception, HttpStatus.NOT_FOUND);
+        DocumentManagerException documentManagerException = new DocumentManagerException(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(documentManagerException);
+    }
+
+    @ExceptionHandler(DocumentManagerInvalidInput.class)
+    public ResponseEntity<?> handleInvalidInput(DocumentManagerInvalidInput exception) {
+        DocumentManagerException documentManagerException = new DocumentManagerException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(documentManagerException);
     }
 
     // This method capture when an input value is invalid based on the validations in the DTOs
