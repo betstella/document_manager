@@ -45,15 +45,23 @@ public class AuthorService {
         return AuthorMapper.mapAuthorsToWithDocumentsDto(authorRepository.findAll());
     }
 
-    // Method to find existing authors and create new ones if they don't exist
+    // Method to find existing authors and create new ones if they don't exist based on the id or the first and last name
     public void processAuthors(Set<AuthorDto> authors) {
         for (AuthorDto author : authors) {
-            Author existingAuthor = getAuthorByFirstAndLastName(author.getFirstname(), author.getLastname());
-            if (existingAuthor == null) {
-                long id = createAuthor(author).getId();
-                author.setId(id);
+            if (author.getId() == null) {
+                Author existingAuthor = getAuthorByFirstAndLastName(author.getFirstname(), author.getLastname());
+                if (existingAuthor == null) {
+                    long id = createAuthor(author).getId();
+                    author.setId(id);
+                } else {
+                    author.setId(existingAuthor.getId());
+                }
             } else {
-                author.setId(existingAuthor.getId());
+                Optional<Author> existingAuthor = authorRepository.findById(author.getId());
+                if (existingAuthor.isEmpty()) {
+                    long id = createAuthor(author).getId();
+                    author.setId(id);
+                }
             }
         }
     }

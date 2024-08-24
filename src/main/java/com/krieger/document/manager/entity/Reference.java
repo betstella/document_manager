@@ -8,6 +8,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ import java.util.List;
 @Table(name = "reference")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Reference {
 
     @Id
